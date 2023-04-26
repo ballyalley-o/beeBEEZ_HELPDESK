@@ -14,6 +14,4 @@ router.get("/posts", feedController.getPosts);
 router.post("/post", sanitizePost, feedController.addPost);
 
 
-
-
 module.exports = router;

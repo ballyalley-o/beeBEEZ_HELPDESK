@@ -1,4 +1,6 @@
 const { validationResult } = require('express-validator');
+const logMsg = require('../helper/logger');
+const Post = require('../models/Post');
 require('colors');
 
 exports.getPosts = (req, res, next) => {
@@ -19,8 +21,6 @@ exports.getPosts = (req, res, next) => {
 }
 
 exports.addPost = (req, res, next) => {
-    const title = req.body.title;
-    const content = req.body.content;
     const errors = validationResult(req);
      if (!errors.isEmpty()) {
         return res
@@ -30,18 +30,26 @@ exports.addPost = (req, res, next) => {
                         errors: errors.array()
                     })
      }
-    res
-        .status(201)
-        .json({
-                message: 'Post created successfully',
-                post: {
-                        id: new Date().toISOString(),
-                        title: title,
-                        content: content,
-                        creator: {
-                            name: 'dawg_doe'
-                        },
-                        createdAt: new Date()
-                    }
-                })
-        }
+    const title = req.body.title;
+    const content = req.body.content;
+    const post = new Post({
+      title: title,
+      content: content,
+      imageUrl: "images/images.jpeg",
+      creator: {
+        name: "dawg_doe",
+      },
+    });
+    post
+        .save()
+        .then(result => {
+           logMsg.logPOST(result)
+           res.status(201).json({
+             message: logMsg.logSUCCESS("POST"),
+             post: result
+           });
+        })
+        .catch(err => {
+            logMsg.logERR(err)
+    });
+    }

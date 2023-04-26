@@ -1,18 +1,10 @@
 const express = require('express');
-const feedRoutes = require('./routes/feed');
-const logMsg = require('./helper/logger')
-const cors = require('cors');
-require('colors')
-require('dotenv').config()
+const mongoose = require('./db/dbConnect');
+const App = require('./config/server-config');
 
-const app = express();
+const app = new App();
 
-const PORT = 8000;
 
-app.use(express.json());
-app.use(cors())
-app.use('/feed', feedRoutes);
+app.start();
 
-app.listen(PORT, () => {
-    logMsg.LogPORT(PORT)
-});
+
