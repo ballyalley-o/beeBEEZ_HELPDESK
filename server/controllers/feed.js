@@ -4,38 +4,36 @@ const Post = require('../models/Post');
 require('colors');
 
 exports.getPosts = (req, res, next) => {
-    res.status(200).json({
-      posts: [
-                {
-                _id: "6",
-                title: "hey",
-                content: "PORT is working",
-                imageUrl: "images/images.jpeg",
-                creator: {
-                    name: "dawg_doe"
-                },
-                createdAt: new Date()
-                },
-            ],
-    });
+    Post.find()
+        .then(posts => {
+          res
+            .status(200)
+            .json({
+              message: logMsg.logSUCCESS("POSTS FOUND"),
+              posts: posts
+            })
+        })
+        .catch(err => {
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err)
+        });
 }
 
 exports.addPost = (req, res, next) => {
     const errors = validationResult(req);
      if (!errors.isEmpty()) {
-        return res
-                .status(422)
-                .json({
-                        message: 'Validation Failed',
-                        errors: errors.array()
-                    })
+        const error = new Error('Validation Failed')
+        error.statusCode = 422;
+        throw error;
      }
     const title = req.body.title;
     const content = req.body.content;
     const post = new Post({
       title: title,
       content: content,
-      imageUrl: "images/images.jpeg",
+      imageUrl: 'images/duck.png',
       creator: {
         name: "dawg_doe",
       },
@@ -45,11 +43,33 @@ exports.addPost = (req, res, next) => {
         .then(result => {
            logMsg.logPOST(result)
            res.status(201).json({
-             message: logMsg.logSUCCESS("POST"),
+             message: logMsg.logSUCCESS("POSTED SUCCESSFULLY"),
              post: result
            });
         })
         .catch(err => {
-            logMsg.logERR(err)
-    });
+            if (!err.statusCode) {
+              err.statusCode = 500;
+            }
+            next(err);
+        });
     }
+
+exports.getPost = (req, res, next) => {
+  const postId = req.params.postId;
+  Post.findById(postId)
+    .then((post) => {
+      if (!post) {
+        const error = new Error("Post not found");
+        error.statusCode = 404;
+        throw error;
+      }
+      res.status(200).json({ message: "POST FOUND", post: post });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};

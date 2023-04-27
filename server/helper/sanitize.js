@@ -3,7 +3,7 @@ const { body } = require('express-validator')
 const sanitizePost = [
     body('title')
         .trim()
-        .isLength({ min: 5 }),
+        .isLength({ min: 6 }),
     body('content')
         .trim()
         .isLength({ min: 10 })

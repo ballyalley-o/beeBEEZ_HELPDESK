@@ -13,5 +13,11 @@ router.get("/posts", feedController.getPosts);
 //Path: /feed/posts
 router.post("/post", sanitizePost, feedController.addPost);
 
+// Method: GET
+//Path: /feed/posts/:postId
+router.get("/post/:postId", feedController.getPost);
+
+
+
 
 module.exports = router;
