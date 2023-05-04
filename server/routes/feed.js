@@ -9,13 +9,21 @@ const router = express.Router();
 //Path: /feed/posts
 router.get("/posts", feedController.getPosts);
 
+// Method: GET
+//Path: /feed/posts/:postId
+router.get("/post/:postId", feedController.getPost);
+
 // Method: POST
 //Path: /feed/posts
 router.post("/post", sanitizePost, feedController.addPost);
 
-// Method: GET
+// Method: PUT
 //Path: /feed/posts/:postId
-router.get("/post/:postId", feedController.getPost);
+router.put("/post/:postId", sanitizePost, feedController.updatePost);
+
+// // Method: DELETE
+// //Path: /feed/posts/:postId
+// router.delete("/post/:postId", sanitizePost, feedController.deletePost);
 
 
 

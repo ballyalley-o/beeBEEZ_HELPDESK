@@ -5,6 +5,7 @@ const feedRoutes = require("../routes/feed");
 const errorHandler = require("../middleware/error-handler");
 const cors = require("cors");
 const logMsg = require("../helper/logger");
+const { fileStorage, fileFilter } = require("../helper/file-upload");
 require("dotenv").config();
 
 class App {
@@ -15,11 +16,12 @@ class App {
     this.app.use(cors());
     this.app.use('/images', express.static(path.join(__dirname, '..', 'images')));
     this.app.use(errorHandler);
-    this.multer = multer({
-      storage: multer({
-        storage: fileStorage, fileFilter: fileFilter
+    this.app.use(
+      multer({
+        storage: fileStorage,
+        fileFilter: fileFilter,
       }).single("image")
-    });
+    );
     this.regRoutes();
   }
 
