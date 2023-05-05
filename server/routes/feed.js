@@ -21,9 +21,9 @@ router.post("/post", sanitizePost, feedController.addPost);
 //Path: /feed/posts/:postId
 router.put("/post/:postId", sanitizePost, feedController.updatePost);
 
-// // Method: DELETE
-// //Path: /feed/posts/:postId
-// router.delete("/post/:postId", sanitizePost, feedController.deletePost);
+// Method: DELETE
+//Path: /feed/posts/:postId
+router.delete("/post/:postId", feedController.deletePost);
 
 
 

@@ -6,21 +6,32 @@ const Post = require('../models/Post');
 require('colors');
 
 exports.getPosts = (req, res, next) => {
+  const currentPage = req.query.page || 1;
+  const perPage = 2;
+  let totalItems;
     Post.find()
-        .then(posts => {
-          res
-            .status(200)
-            .json({
-              message: logMsg.logSUCCESS("POSTS FOUND"),
-              posts: posts
-            })
-        })
-        .catch(err => {
-          if (!err.statusCode) {
-            err.statusCode = 500;
-          }
-          next(err)
+      .countDocuments()
+      .then((count) => {
+        totalItems = count;
+        return Post
+                    .find()
+                    .skip((currentPage - 1) * perPage)
+                    .limit(perPage);
+      })
+      .then((posts) => {
+        res.status(200).json({
+          message: logMsg.logSUCCESS("POSTS FOUND"),
+          posts: posts,
+          totalItems: totalItems
         });
+      })
+      .catch((err) => {
+        if (!err.statusCode) {
+          err.statusCode = 500;
+        }
+        next(err);
+      });
+
 }
 
 exports.getPost = (req, res, next) => {
@@ -130,9 +141,35 @@ exports.updatePost = (req, res, next) => {
   })
 }
 
-const deleteImage = filePath => {
-  filePath = path.join(__dirname, '..', filePath);
-  fs.unlink(filePath, err => {
-    console.log(err)
-  })
+exports.deletePost = (req, res, next) => {
+  const postId = req.params.postId;
+  Post.findById(postId)
+      .then(post => {
+        if (!post) {
+          const error = new Error("Could not find the post");
+          error.statusCode = 404;
+          throw error;
+        }
+        deleteImage(post.imageUrl);
+        return Post.findByIdAndRemove(postId)
+      })
+      .then(result => {
+        logMsg.logSUCCESS('POST DELETED')
+        res.status(200)
+            .json({message: 'POST DELETED', result: {}})
+      })
+      .catch(err => {
+         if (!err.statusCode) {
+           err.statusCode = 500;
+         }
+         next(err);
+      })
 }
+
+
+const deleteImage = (filePath) => {
+  filePath = path.join(__dirname, "..", filePath);
+  fs.unlink(filePath, (err) => {
+    console.log(err);
+  });
+};

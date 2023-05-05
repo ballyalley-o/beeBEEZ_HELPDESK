@@ -2,6 +2,7 @@ const path = require("path");
 const express = require("express");
 const multer = require("multer");
 const feedRoutes = require("../routes/feed");
+const authRoutes = require("../routes/auth")
 const errorHandler = require("../middleware/error-handler");
 const cors = require("cors");
 const logMsg = require("../helper/logger");
@@ -27,6 +28,7 @@ class App {
 
   regRoutes() {
     this.app.use("/feed", feedRoutes);
+    this.app.use("/auth", authRoutes);
   }
 
   start() {
