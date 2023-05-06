@@ -17,7 +17,7 @@ const userSchema = new Schema({
     },
     status: {
         type: String,
-        required: true
+        default: 'NEWBIE'
     },
     posts: [{
         type: Schema.Types.ObjectId,

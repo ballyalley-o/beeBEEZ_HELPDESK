@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const logMsg = require('../helper/logger');
 const Post = require('../models/Post');
+const User = require('../models/User')
 require('colors');
 
 exports.getPosts = (req, res, next) => {
@@ -68,23 +69,36 @@ exports.addPost = (req, res, next) => {
     const imageUrl = req.file.path;
     const title = req.body.title;
     const content = req.body.content;
+    let creator;
     const post = new Post({
       title: title,
       content: content,
       imageUrl: imageUrl,
-      creator: {
-        name: "dawg_doe",
-      },
+      creator: req.userId
     });
     post
         .save()
         .then(result => {
-           logMsg.logPOST(result)
+          return User.findById(req.userId)
+        })
+        .then(user => {
+          creator = user;
+          user.posts.push(post)
+          return user.save();
+        })
+        .then(result => {
+          logMsg.logPOST(result)
            res.status(201).json({
              message: logMsg.logSUCCESS("POSTED SUCCESSFULLY"),
-             post: result
+             post: post,
+             creator: {
+                        _id: creator._id,
+                        name: creator.name
+            }
            });
         })
+
+
         .catch(err => {
             if (!err.statusCode) {
               err.statusCode = 500;
@@ -119,6 +133,11 @@ exports.updatePost = (req, res, next) => {
       error.statusCode = 404;
       throw error
     }
+    if (post.creator.toString() !== req.userId) {
+      const error = new Error('NOT AUTHENTICATED TO EDIT THIS POST');
+      error.statusCode = 403;
+      throw error
+    }
     if (imageUrl !== post.imageUrl) {
       deleteImage(post.imageUrl)
     }
@@ -148,6 +167,11 @@ exports.deletePost = (req, res, next) => {
         if (!post) {
           const error = new Error("Could not find the post");
           error.statusCode = 404;
+          throw error;
+        }
+        if (post.creator.toString() !== req.userId) {
+          const error = new Error("NOT AUTHENTICATED TO DELETE THIS POST");
+          error.statusCode = 403;
           throw error;
         }
         deleteImage(post.imageUrl);
