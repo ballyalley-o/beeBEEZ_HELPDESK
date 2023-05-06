@@ -34,7 +34,15 @@ const sanitizeAuth = [
     .not()
     .isEmpty()
 ];
+
+const sanitizeStatus = [
+    body('status')
+    .trim()
+    .not()
+    .isEmpty()
+]
 module.exports = {
     sanitizePost,
-    sanitizeAuth
+    sanitizeAuth,
+    sanitizeStatus
 }

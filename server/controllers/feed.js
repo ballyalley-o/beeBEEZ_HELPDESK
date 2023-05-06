@@ -178,9 +178,16 @@ exports.deletePost = (req, res, next) => {
         return Post.findByIdAndRemove(postId)
       })
       .then(result => {
-        logMsg.logSUCCESS('POST DELETED')
-        res.status(200)
-            .json({message: 'POST DELETED', result: {}})
+        return User.findById(req.userId)
+      })
+      .then(user => {
+        user.posts.pull(postId)
+        return user.save();
+      })
+      .then(result => {
+        logMsg.logSUCCESS("POST DELETED");
+        res.status(200).json({ message: "POST DELETED", result: {}
+      });
       })
       .catch(err => {
          if (!err.statusCode) {
