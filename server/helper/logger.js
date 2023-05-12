@@ -29,3 +29,7 @@ exports.logPOST = (result) => {
 exports.logSUCCESS = (msg) => {
     "SUCCESS: ".green.inverse + msg
 }
+
+exports.LogSOCKET = (socket) => {
+    console.log(`A USER JOINED: ${socket.id}`.yellow.inverse);
+}
