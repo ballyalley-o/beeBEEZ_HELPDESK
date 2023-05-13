@@ -14,16 +14,16 @@ exports.getPosts = async (req, res, next) => {
      const totalItems = await Post
                                 .find()
                                 .countDocuments()
-     const posts = await Post
+     const Posts = await Post
                     .find()
                     .populate('creator')
                     .sort({createdAt: -1})
                     .skip((currentPage - 1) * perPage)
                     .limit(perPage);
         res.status(200).json({
-          message: logMsg.logSUCCESS("POSTS FOUND"),
-          posts: posts,
-          totalItems: totalItems
+          message: logMsg.logSUCCESS('POSTS FOUND'),
+          posts: Posts,
+          totalItems: totalItems,
         });
       } catch (err) {
           if (!err.statusCode) {
@@ -76,11 +76,11 @@ exports.addPost = async (req, res, next) => {
     try {
     await post.save()
     const user = await User.findById(req.userId)
-          user.posts.push(post)
+          user.Posts.push(post)
    await user.save();
           io
           .getIO()
-          .emit('posts', {
+          .emit('Posts', {
                           action: 'create',
                           post: {
                                 ...post._doc,
@@ -146,7 +146,7 @@ exports.updatePost = async (req, res, next) => {
      post.imageUrl = imageUrl;
      post.content = content;
      const result = await post.save();
-     io.getIO().emit('posts', { action: 'update', post: result})
+     io.getIO().emit('Posts', { action: 'update', post: result})
      res.status(200).json({
        message: "Post UPDATED!",
        post: result,
@@ -177,9 +177,9 @@ exports.deletePost = async (req, res, next) => {
         await Post.findByIdAndRemove(postId)
         const user = User.findById(req.userId)
 
-        user.posts.pull(postId)
+        user.Posts.pull(postId)
         await user.save();
-        io.getIO().emit('posts', {action: 'delete', post: postId})
+        io.getIO().emit('Posts', {action: 'delete', post: postId})
         logMsg.logSUCCESS("POST DELETED");
         res.status(200).json({ message: "POST DELETED", result: {}
       });

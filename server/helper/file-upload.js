@@ -26,7 +26,13 @@ const fileFilter = (req, file, cb) => {
     cb(error, isValid)
 }
 
+const multerCONFIG = multer({
+  storage: fileStorage,
+  fileFilter: fileFilter,
+}).single('image');
+
 module.exports = {
     fileStorage,
-    fileFilter
+    fileFilter,
+    multerCONFIG
 }

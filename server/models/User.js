@@ -19,15 +19,14 @@ const userSchema = new Schema({
         type: String,
         default: 'NEWBIE'
     },
-    posts: [{
+    Posts: [{
         type: Schema.Types.ObjectId,
         ref: 'Post'
     }]
-
 },
 {
     timestamps: true,
-    collection: 'User'
+    collection: 'Users'
 });
 
 module.exports = mongoose.model('User', userSchema)

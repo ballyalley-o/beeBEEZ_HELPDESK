@@ -7,7 +7,11 @@ module.exports = (req, res, next) => {
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, DELETE, PUT"
+    "OPTIONS, GET, POST, PATCH, DELETE, PUT"
   );
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
   next();
 };

@@ -23,7 +23,6 @@ const postSchema = new Schema({
 },
     { timestamps: true },
     { collection: 'Posts'}
-
 )
 
 module.exports = mongoose.model('Post', postSchema);
