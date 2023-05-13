@@ -6,7 +6,7 @@ module.exports = {
             allowEIO3: true,
             cors: {
                 origin: "http://localhost:3000",
-                methods: ["GET", "POST"],
+                methods: ["GET", "POST", "UPDATE", "DELETE"],
                 credentials: true
             }
         });

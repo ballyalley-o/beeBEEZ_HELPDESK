@@ -74,7 +74,6 @@ class Feed extends Component {
       const updatedPostIndex = updatedPosts.findIndex(p => p.id === post._id);
       if (updatedPostIndex > -1) {
         updatedPosts[updatedPostIndex] = post;
-        this.loadPosts();
       }
       return {
           posts: updatedPosts,
