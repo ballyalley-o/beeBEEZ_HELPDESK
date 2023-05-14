@@ -198,3 +198,7 @@ const deleteImage = (filePath) => {
     console.log(err);
   });
 };
+
+module.exports = {
+  deleteImage
+}

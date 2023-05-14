@@ -7,6 +7,7 @@ const { multerCONFIG } = require("../helper/file-upload")
 const setHeader = require("../middleware/set-header");
 const errorHandler = require("../middleware/error-handler");
 const graphqlHttpCONFIG = require('./graphql-config');
+const graphqlFileUpload = require('../helper/graphql-upload')
 const auth = require('../middleware/auth')
 const logMsg = require("../helper/logger");
 require("dotenv").config();
@@ -17,12 +18,13 @@ class App {
     this.port = process.env.PORT || 8003;
     this.app.use(express.json());
     this.app.use(cors());
-    this.app.use('/images', express.static(path.join(__dirname, '..', 'images')));
+    this.app.use(auth);
     this.app.use(setHeader);
     this.app.use(errorHandler);
-    this.app.use(auth)
+    this.app.use('/images', express.static(path.join(__dirname, '..', 'images')));
     this.app.use('/graphql', graphqlHttpCONFIG);
     this.app.use(multerCONFIG);
+    this.app.put('/post-image', graphqlFileUpload.graphqlFileUploadCONFIG);
     this.regRoutes();
   }
 
