@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const validator = require('validator');
 const jwt = require('jsonwebtoken')
 const Models = require('../models');
+const { deleteImage } = require('../helper/delete-image')
 require('dotenv').config()
 
 const User = Models.User;
@@ -211,5 +212,67 @@ module.exports = {
             createdAt: updatedPost.createdAt.toISOString(),
             updatedAt: updatedPost.updatedAt.toISOString()
           }
+      },
+      deletePost: async function({id}, req) {
+         if (!req.isAuth) {
+           const error = new Error('NOT AUTHENTICATED');
+           error.code = 401;
+           throw error;
+         }
+         const post = await Post.findById(id);
+          if (!post) {
+            const error = new Error('POST NOT FOUND');
+            error.code = 404;
+            throw error;
+          }
+          if (post.creator.toString() !== req.userId.toString()) {
+            const error = new Error('NOT AUTHORIZED');
+            error.code = 403;
+            throw error;
+          }
+          deleteImage(post.imageUrl);
+            try {
+               await Post.findByIdAndRemove(id);
+               const user = await User.findById(req.userId);
+               user.Posts.pull(id);
+               await user.save();
+            } catch (err) {
+              const error = new Error(err);
+              error.code = 403;
+              throw error
+            }
+            return true;
+      },
+      user: async function(args, req) {
+        if (!req.isAuth) {
+          const error = new Error('NOT AUTHENTICATED');
+          error.code = 401;
+          throw error;
+        }
+        const user = await User.findById(req.userId);
+        if (!user) {
+          const error = new Error('USER NOT FOUND');
+          error.code = 404;
+          throw error;
+        }
+        return {...user._doc,
+        _id: user._id.toString()}
+      },
+      updateStatus: async function({status}, req) {
+        if (!req.isAuth) {
+          const error = new Error('NOT AUTHENTICATED');
+          error.code = 401;
+          throw error;
+        }
+        const user = await User.findById(req.userId);
+        if (!user) {
+          const error = new Error('USER NOT FOUND');
+          error.code = 404;
+          throw error;
+        }
+        user.status = status;
+        await user.save();
+        return {...user._doc, id: user._id.toString()}
       }
+
 }
