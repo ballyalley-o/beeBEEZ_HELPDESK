@@ -16,7 +16,7 @@ const fileStorage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         const ext = MIME_TYPE_MAP[file.mimetype];
-        cb(null, new Date().toISOString() + "_" + UUID + "." + ext);
+        cb(null, UUID + "." + ext);
     }
 });
 

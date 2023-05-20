@@ -18,13 +18,16 @@ class App {
     this.port = process.env.PORT || 8003;
     this.app.use(express.json());
     this.app.use(cors());
-    this.app.use(auth);
+    this.app.use(multerCONFIG);
+    this.app.use('/images', express.static(path.join(__dirname, '..', 'images')));
     this.app.use(setHeader);
     this.app.use(errorHandler);
-    this.app.use('/images', express.static(path.join(__dirname, '..', 'images')));
-    this.app.use('/graphql', graphqlHttpCONFIG);
-    this.app.use(multerCONFIG);
+    this.app.use(auth);
+
     this.app.put('/post-image', graphqlFileUpload.graphqlFileUploadCONFIG);
+    this.app.use('/graphql', graphqlHttpCONFIG);
+
+
     this.regRoutes();
   }
 

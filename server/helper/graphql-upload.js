@@ -1,7 +1,8 @@
-const fs = require('fs');
+const { deleteImage } = require('./delete-image');
 require('express');
 
-exports.graphqlFileUploadCONFIG = (req, res, next) => {
+
+const graphqlFileUploadCONFIG = (req, res, next) => {
   if (!req.isAuth) {
     throw new Error('NOT AUTHENTICATED')
   }
@@ -19,9 +20,4 @@ exports.graphqlFileUploadCONFIG = (req, res, next) => {
             });
 };
 
-const deleteImage = (filePath) => {
-  filePath = path.join(__dirname, '..', filePath);
-  fs.unlink(filePath, (err) => {
-    console.log(err);
-  });
-};
+exports.graphqlFileUploadCONFIG = graphqlFileUploadCONFIG;

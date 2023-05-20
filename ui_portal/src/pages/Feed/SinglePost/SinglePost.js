@@ -24,7 +24,7 @@ class SinglePost extends Component {
               name
             }
             createdAt
-      }
+          }
       }
     `
     };
@@ -47,7 +47,7 @@ class SinglePost extends Component {
           title: resData.data.post.title,
           author: resData.data.post.creator.name,
           image: "http://localhost:8000/" + resData.data.post.imageUrl,
-          date: new Date(resData.data.post.createdAt).toLocaleDateString("en-NZ"),
+          date: new Date(resData.data.post.createdAt).toLocaleDateString("en-US"),
           content: resData.data.post.content,
         });
       })
