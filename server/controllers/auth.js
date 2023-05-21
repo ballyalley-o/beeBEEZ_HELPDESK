@@ -69,17 +69,17 @@ exports.login = async (req, res, next) => {
       },
     );
     res.status(200).json({
-      token: token,
-      userId: loadedUser._id.toString(),
-    })
-    return
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-    // just for testing
-    return err
+        token: token,
+        userId: loadedUser._id.toString(),
+        })
+        return
+    } catch (err) {
+        if (!err.statusCode) {
+        err.statusCode = 500;
+        }
+        next(err);
+        // just for testing
+        return err
   }
 }
 

@@ -76,20 +76,21 @@ exports.addPost = async (req, res, next) => {
     try {
     await post.save()
     const user = await User.findById(req.userId)
-          user.Posts.push(post)
-   await user.save();
-          io
-          .getIO()
-          .emit('Posts', {
-                          action: 'create',
-                          post: {
-                                ...post._doc,
-                                  creator: {
-                                    _id: req.userId,
-                                    name: user.name
-                                  }
-                                }
-                          });
+    user.Posts.push(post)
+    //just put in variable to return  this for testing
+   const savedUser = await user.save();
+          // io
+          // .getIO()
+          // .emit('Posts', {
+          //                 action: 'create',
+          //                 post: {
+          //                       ...post._doc,
+          //                         creator: {
+          //                           _id: req.userId,
+          //                           name: user.name
+          //                         }
+          //                       }
+          //                 });
            res.status(201).json({
              message: "POSTED SUCCESSFULLY",
              post: post,
@@ -98,6 +99,8 @@ exports.addPost = async (req, res, next) => {
                         name: user.name
               }
            });
+           //for testing
+           return savedUser;
     }
     catch (err) {
        if (!err.statusCode) {
