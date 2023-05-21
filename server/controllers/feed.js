@@ -1,7 +1,7 @@
 const { validationResult } = require('express-validator');
 const fs = require('fs');
 const path = require('path');
-const io = require('../helper/socket');
+// const io = require('../helper/socket');
 const logMsg = require('../helper/logger');
 const Post = require('../models/Post');
 const User = require('../models/User')
